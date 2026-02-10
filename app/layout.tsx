@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import '@mantine/core/styles.css';
-import {MantineProvider} from '@mantine/core'
+import { MantineProvider } from '@mantine/core';
 import './globals.css';
-import {TopNav} from "@/components/partials/TopNav";
+import { TopNav } from '@/components/partials/TopNav';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -28,12 +28,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased` }
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-     <MantineProvider>
-         <TopNav />
-         {children}
-     </MantineProvider>
+        <MantineProvider>
+          <TopNav />
+          {children}
+        </MantineProvider>
       </body>
     </html>
   );
