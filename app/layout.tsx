@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Code CheetSheets',
+  title: 'Code CheatSheets',
   description: 'Manage Code Snippets',
 };
 
