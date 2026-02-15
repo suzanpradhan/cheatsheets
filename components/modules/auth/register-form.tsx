@@ -13,7 +13,7 @@ import google from '@/assets/svg/google.svg';
 import Image from 'next/image';
 import { useForm } from '@mantine/form';
 
-export const LoginForm = ({
+export const RegisterForm = ({
   setAuthMode,
 }: {
   setAuthMode: (mode: string) => void;
@@ -21,6 +21,7 @@ export const LoginForm = ({
   const form = useForm({
     mode: 'uncontrolled',
     initialValues: {
+      fullName: '',
       email: '',
       password: '',
     },
@@ -39,14 +40,14 @@ export const LoginForm = ({
   };
 
   return (
-    <Box className="w-full max-w-sm">
+    <Box className="w-full max-w-sm h-full">
       <Stack gap="lg">
         <div>
           <h2 className="text-3xl font-semibold text-gray-900 mb-1">
-            Welcome back
+            Create account
           </h2>
           <p className="text-gray-500 text-md font-normal">
-            Sign in to your account
+            Sign up to start saving cheats
           </p>
         </div>
 
@@ -69,11 +70,11 @@ export const LoginForm = ({
               },
             }}
           >
-            Continue with Google
+            Sign up with Google
           </Button>
 
           <Divider
-            label="OR EMAIL"
+            label="OR DETAILS"
             labelPosition="center"
             styles={{
               label: {
@@ -89,6 +90,26 @@ export const LoginForm = ({
         </div>
         <form onSubmit={form.onSubmit(() => handleSubmit())}>
           <Stack gap="md">
+            <div>
+              <Text size="sm" fw={500} mb={8} c="gray.7">
+                Full Name
+              </Text>
+              <TextInput
+                placeholder="John Doe"
+                size="md"
+                radius="md"
+                required
+                {...form.getInputProps('fullName')}
+                styles={{
+                  input: {
+                    height: '50px',
+                  },
+                  label: {
+                    fontSize: '16px',
+                  },
+                }}
+              />
+            </div>
             <div>
               <Text size="sm" fw={500} mb={8} c="gray.7">
                 Email
@@ -156,20 +177,20 @@ export const LoginForm = ({
               fullWidth
               variant="filled"
             >
-              Sign in
+              Create account
             </Button>
           </Stack>
         </form>
 
         <Text size="sm" ta="center" c="dimmed" fw={500}>
-          Don&apos;t have an account?{' '}
+          Already have an account?{' '}
           <Anchor
-            onClick={() => setAuthMode('register')}
+            onClick={() => setAuthMode('login')}
             underline="hover"
             c={'dark'}
             fw={600}
           >
-            Join for free
+            Sign in instead
           </Anchor>
         </Text>
         <div>
@@ -185,7 +206,7 @@ export const LoginForm = ({
             size="xs"
             ta="center"
             c="dimmed"
-            mt="xl"
+            my="xl"
             fw={'500'}
             lh={'1.5'}
             lts={'1px'}
