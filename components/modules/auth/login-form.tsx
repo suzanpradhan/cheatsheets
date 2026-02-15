@@ -16,10 +16,9 @@ import { useForm } from '@mantine/form';
 export const LoginForm = ({
   setAuthMode,
 }: {
-  setAuthMode: (mode: string) => void;
+  setAuthMode: (mode: 'login' | 'register') => void;
 }) => {
   const form = useForm({
-    mode: 'uncontrolled',
     initialValues: {
       email: '',
       password: '',
@@ -115,20 +114,7 @@ export const LoginForm = ({
                 <Text size="sm" fw={500} c="gray.7">
                   Password
                 </Text>
-                <Text
-                  size="xs"
-                  fw={500}
-                  className="cursor-pointer"
-                  styles={{
-                    root: {
-                      color: '#6b7280', // normal color
-                      transition: 'color 0.2s',
-                      '&:hover': {
-                        color: '#000000', // hover color
-                      },
-                    },
-                  }}
-                >
+                <Text size="xs" fw={500} c="dimmed">
                   Forgot?
                 </Text>
               </div>

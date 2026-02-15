@@ -16,10 +16,9 @@ import { useForm } from '@mantine/form';
 export const RegisterForm = ({
   setAuthMode,
 }: {
-  setAuthMode: (mode: string) => void;
+  setAuthMode: (mode: 'login' | 'register') => void;
 }) => {
   const form = useForm({
-    mode: 'uncontrolled',
     initialValues: {
       fullName: '',
       email: '',
@@ -135,22 +134,6 @@ export const RegisterForm = ({
               <div className="flex justify-between items-center mb-2">
                 <Text size="sm" fw={500} c="gray.7">
                   Password
-                </Text>
-                <Text
-                  size="xs"
-                  fw={500}
-                  className="cursor-pointer"
-                  styles={{
-                    root: {
-                      color: '#6b7280', // normal color
-                      transition: 'color 0.2s',
-                      '&:hover': {
-                        color: '#000000', // hover color
-                      },
-                    },
-                  }}
-                >
-                  Forgot?
                 </Text>
               </div>
               <PasswordInput

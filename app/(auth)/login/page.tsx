@@ -20,7 +20,7 @@ export default function Login() {
           />
         </div>
 
-        <div className="absolute inset-0 bg-linear-gradient-to-br from-black/60 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-transparent to-transparent" />
 
         <div className="relative z-10 max-w-md text-6xl font-bold leading-[1.1] ">
           <h1 className=" text-white">Save your</h1>
