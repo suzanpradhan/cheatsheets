@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Language } from '@/utils/interfaces/language';
 import { Snippet } from '@/utils/interfaces/snippet';
 
-const BASE_URL = 'https://cheatsheets-server.suzanpradhan.com.np';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const api = createApi({
   reducerPath: 'api',
@@ -53,10 +53,10 @@ export const api = createApi({
       {
         id: number;
         data: {
-          title?: string;
-          description?: string;
-          code_snippet?: string;
-          language?: string;
+          title: string;
+          description: string;
+          code_snippet: string;
+          language: string;
         };
       }
     >({

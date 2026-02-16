@@ -10,11 +10,16 @@ import {
 } from '@/store/api';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
+import toast from 'react-hot-toast';
 
 export default function SnippetsGrid() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const query = useSelector((state: RootState) => state.search.query);
-  const { data: sheets, isLoading: sheetloading } = useGetSheetsQuery(query);
+  const {
+    data: sheets,
+    isLoading: sheetloading,
+    isError,
+  } = useGetSheetsQuery(query);
   const [createSheet, { isLoading: isCreating }] = useCreateSheetMutation();
   const [updateSheet] = useUpdateSheetMutation();
   const [deleteSheet] = useDeleteSheetMutation();
@@ -23,8 +28,10 @@ export default function SnippetsGrid() {
     try {
       await deleteSheet(id).unwrap();
       if (editingId === id) setEditingId(null);
+      toast.success('Sheet deleted successfully.');
     } catch (error) {
-      console.error('Failed to delete sheet', error);
+      console.error(error);
+      toast.error('Failed to delete sheet.');
     }
   };
 
@@ -41,14 +48,16 @@ export default function SnippetsGrid() {
         id,
         data: {
           title: updatedTitle,
-          description: sheet.description,
+          description: sheet.description ?? '',
           code_snippet: updatedCode,
           language: languageName,
         },
       }).unwrap();
       setEditingId(null);
+      toast.success('Sheet updated successfully.');
     } catch (error) {
-      console.error('Failed to update sheet', error);
+      console.error(error);
+      toast.error('Failed to update sheet.');
     }
   };
 
@@ -65,8 +74,10 @@ export default function SnippetsGrid() {
         code_snippet,
         language,
       }).unwrap();
+      toast.success('Sheet created successfully.');
     } catch (error) {
-      console.error('Failed to create sheet', error);
+      console.error(error);
+      toast.error('Failed to create sheet.');
     }
   };
   if (sheetloading) {
@@ -76,7 +87,15 @@ export default function SnippetsGrid() {
       </div>
     );
   }
-
+  if (isError) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center text-red-400">
+          Something went wrong. Please try again.
+        </div>
+      </div>
+    );
+  }
   return (
     <section className={'w-full my-12'}>
       <NewSnippetButton onAdd={handleAdd} isLoading={isCreating} />
