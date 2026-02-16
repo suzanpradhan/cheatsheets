@@ -12,12 +12,9 @@ import {
 import google from '@/assets/svg/google.svg';
 import Image from 'next/image';
 import { useForm } from '@mantine/form';
+import Link from 'next/link';
 
-export const LoginForm = ({
-  setAuthMode,
-}: {
-  setAuthMode: (mode: 'login' | 'register') => void;
-}) => {
+export const LoginForm = () => {
   const form = useForm({
     initialValues: {
       email: '',
@@ -150,7 +147,8 @@ export const LoginForm = ({
         <Text size="sm" ta="center" c="dimmed" fw={500}>
           Don&apos;t have an account?{' '}
           <Anchor
-            onClick={() => setAuthMode('register')}
+            component={Link}
+            href="/register"
             underline="hover"
             c={'dark'}
             fw={600}

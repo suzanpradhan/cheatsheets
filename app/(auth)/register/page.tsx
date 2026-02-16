@@ -1,11 +1,10 @@
-'use client';
 import Image from 'next/image';
-import { LoginForm } from '@/components/modules/auth/login-form';
 import background from '@/assets/images/login-bg.avif';
+import { RegisterForm } from '@/components/modules/auth/register-form';
 
-export default function Login() {
+export default function Register() {
   return (
-    <div className="flex min-h-screen h-screen overflow-hidden">
+    <div className="flex min-h-screen">
       <div className="hidden lg:flex lg:w-1/2 relative bg-gray-900 px-12 py-28">
         <div className="absolute inset-0 opacity-40">
           <Image
@@ -26,8 +25,8 @@ export default function Login() {
         </div>
       </div>
 
-      <div className="w-full lg:w-1/2 flex justify-center items-center  p-8 md:p-16 bg-white h-full overflow-y-auto">
-        <LoginForm />
+      <div className="w-full lg:w-1/2 flex justify-center items-center  p-8 md:p-16 bg-white">
+        <RegisterForm />
       </div>
     </div>
   );
