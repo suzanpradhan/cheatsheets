@@ -132,13 +132,13 @@ export const NewSnippetButton = ({
                   Dismiss
                 </Button>
                 <Button
-                  color="gray"
+                  color="dark"
                   onClick={handleSave}
                   size="xs"
                   disabled={!title || !code_snippet || !selectedLanguage}
                   loading={isCreating}
                 >
-                  Save Sheet
+                  Save Snippet
                 </Button>
               </Group>
             </Group>
