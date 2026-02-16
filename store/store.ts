@@ -1,9 +1,22 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { api } from './api';
+
+const searchSlice = createSlice({
+  name: 'search',
+  initialState: { query: '' },
+  reducers: {
+    setSearchQuery: (state, action: PayloadAction<string>) => {
+      state.query = action.payload;
+    },
+  },
+});
+
+export const { setSearchQuery } = searchSlice.actions;
 
 export const store = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,
+    search: searchSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(api.middleware),

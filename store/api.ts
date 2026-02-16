@@ -16,8 +16,11 @@ export const api = createApi({
       providesTags: ['Language'],
     }),
 
-    getSheets: builder.query<Snippet[], void>({
-      query: () => '/sheet/',
+    getSheets: builder.query<Snippet[], string | void>({
+      query: (search) => ({
+        url: '/sheet/',
+        params: search ? { search } : {},
+      }),
       transformResponse: (response: { count: number; results: Snippet[] }) =>
         response.results,
       providesTags: ['Sheet'],

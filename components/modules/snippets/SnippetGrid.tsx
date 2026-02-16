@@ -8,10 +8,13 @@ import {
   useGetSheetsQuery,
   useUpdateSheetMutation,
 } from '@/store/api';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
 
 export default function SnippetsGrid() {
   const [editingId, setEditingId] = useState<number | null>(null);
-  const { data: sheets, isLoading: sheetloading } = useGetSheetsQuery();
+  const query = useSelector((state: RootState) => state.search.query);
+  const { data: sheets, isLoading: sheetloading } = useGetSheetsQuery(query);
   const [createSheet, { isLoading: isCreating }] = useCreateSheetMutation();
   const [updateSheet] = useUpdateSheetMutation();
   const [deleteSheet] = useDeleteSheetMutation();
@@ -79,7 +82,9 @@ export default function SnippetsGrid() {
       <NewSnippetButton onAdd={handleAdd} isLoading={isCreating} />
       {!sheets || sheets.length === 0 ? (
         <div className={'text-center text-slate-400 mt-16'}>
-          No sheets yet. Create your first one!
+          {query
+            ? `No sheets found for "${query}". `
+            : 'No sheets found. Create your first one! '}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 md:max-w-5xl mx-auto">
