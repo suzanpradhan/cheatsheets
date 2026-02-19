@@ -8,7 +8,9 @@ import { Toaster } from 'react-hot-toast';
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <Provider store={store}>
-      <MantineProvider>
+      <MantineProvider theme={{
+        primaryColor: 'dark',
+      }}>
         <Toaster
           position="top-right"
           toastOptions={{
