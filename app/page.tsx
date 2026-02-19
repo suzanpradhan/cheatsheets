@@ -1,9 +1,5 @@
-import SnippetsGrid from '@/components/modules/snippets/SnippetGrid';
+import { redirect } from 'next/navigation';
 
 export default function Home() {
-  return (
-    <main className={'px-6 flex items-center justify-center'}>
-      <SnippetsGrid />
-    </main>
-  );
+  redirect('/snippets');
 }
