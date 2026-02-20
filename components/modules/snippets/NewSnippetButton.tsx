@@ -9,36 +9,54 @@ import {
   TextInput,
   Textarea,
   Select,
+  Loader,
 } from '@mantine/core';
 import { IconChevronDown, IconPlus } from '@tabler/icons-react';
+import { useGetLanguagesQuery } from '@/store/api';
 
 interface NewSnippetProps {
-  onAdd: (title: string, code: string, language: string) => void;
+  onAdd: (
+    title: string,
+    description: string,
+    code_snippet: string,
+    language: string,
+  ) => void;
+  isLoading?: boolean;
 }
-export const NewSnippetButton = ({ onAdd }: NewSnippetProps) => {
+export const NewSnippetButton = ({
+  onAdd,
+  isLoading: isCreating = false,
+}: NewSnippetProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [title, setTitle] = useState('');
-  const [code, setCode] = useState('');
-  const [language, setLanguage] = useState('JavaScript');
+  const [code_snippet, setCodeSnippet] = useState('');
+  const [language, setLanguage] = useState('');
+  const { data: languages, isLoading: languagesLoading } =
+    useGetLanguagesQuery();
+  const selectedLanguage = language || (languages?.[0]?.name ?? '');
 
   const handleExpand = () => {
     setIsExpanded(true);
   };
 
   const handleDismiss = () => {
+    if (isCreating) return;
     setIsExpanded(false);
     setTitle('');
-    setCode('');
-    setLanguage('JavaScript');
+    setCodeSnippet('');
+    setLanguage('');
   };
 
   const handleSave = () => {
-    if (title && code) {
-      onAdd(title, code, language);
-      handleDismiss();
+    if (title && code_snippet && selectedLanguage) {
+      onAdd(title, '', code_snippet, selectedLanguage);
+      setTitle('');
+      setCodeSnippet('');
+      setLanguage('');
+      setIsExpanded(false);
     }
   };
-
+  const languageOptions = languages?.map((lang) => lang.name) || [];
   return (
     <Paper
       shadow="sm"
@@ -60,7 +78,7 @@ export const NewSnippetButton = ({ onAdd }: NewSnippetProps) => {
         <TextInput
           pt={0}
           p={'sm'}
-          placeholder="Snippet title..."
+          placeholder="Sheet title..."
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           onClick={handleExpand}
@@ -74,8 +92,8 @@ export const NewSnippetButton = ({ onAdd }: NewSnippetProps) => {
             <Textarea
               px={'sm'}
               placeholder="Paste code here..."
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
+              value={code_snippet}
+              onChange={(e) => setCodeSnippet(e.target.value)}
               minRows={8}
               autosize
               styles={{
@@ -88,14 +106,20 @@ export const NewSnippetButton = ({ onAdd }: NewSnippetProps) => {
             <Group justify="space-between" align="center" p={'sm'}>
               <Group gap="xs" align="center">
                 <div className={'text-xs font-bold text-slate-400'}>LANG:</div>
-                <Select
-                  value={language}
-                  onChange={(value) => setLanguage(value || 'JavaScript')}
-                  data={['JavaScript', 'Python', 'CSS', 'React', 'HTML']}
-                  variant={'unstyled'}
-                  w={96}
-                  rightSection={<IconChevronDown size={16} />}
-                />
+                {languagesLoading ? (
+                  <Loader size={16} />
+                ) : (
+                  <Select
+                    value={selectedLanguage}
+                    onChange={(value) => setLanguage(value || '')}
+                    data={languageOptions}
+                    variant={'unstyled'}
+                    w={96}
+                    rightSection={<IconChevronDown size={16} />}
+                    disabled={isCreating}
+                    placeholder={'Select language'}
+                  />
+                )}
               </Group>
 
               <Group>
@@ -107,7 +131,13 @@ export const NewSnippetButton = ({ onAdd }: NewSnippetProps) => {
                 >
                   Dismiss
                 </Button>
-                <Button color="gray" onClick={handleSave} size="xs">
+                <Button
+                  color="dark"
+                  onClick={handleSave}
+                  size="xs"
+                  disabled={!title || !code_snippet || !selectedLanguage}
+                  loading={isCreating}
+                >
                   Save Snippet
                 </Button>
               </Group>

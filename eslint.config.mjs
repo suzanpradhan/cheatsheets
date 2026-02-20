@@ -7,7 +7,7 @@ const eslintConfig = defineConfig([
   ...nextTs,
   {
     rules: {
-      '@next/next/no-img-element': 'error',                // Block <img> tags
+      '@next/next/no-img-element': 'error', // Block <img> tags
     },
   },
   // Override default ignores of eslint-config-next.

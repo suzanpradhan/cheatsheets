@@ -1,5 +1,4 @@
 'use client';
-
 import {
   Card,
   Badge,
@@ -38,17 +37,26 @@ export const SnippetCard = ({
   const [copied, setCopied] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [editedTitle, setEditedTitle] = useState(snippet.title);
-  const [editedCode, setEditedCode] = useState(snippet.code);
+  const [editedCode, setEditedCode] = useState(snippet.code_snippet);
 
+  const languageName = snippet.language.name;
+
+  const formattedDate = new Date(snippet.created_at).toLocaleDateString(
+    'en-US',
+    {
+      month: 'short',
+      day: 'numeric',
+    },
+  );
   const handleCopy = () => {
-    navigator.clipboard.writeText(snippet.code);
+    navigator.clipboard.writeText(snippet.code_snippet);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleEdit = () => {
     setEditedTitle(snippet.title);
-    setEditedCode(snippet.code);
+    setEditedCode(snippet.code_snippet);
     onEdit();
   };
 
@@ -58,7 +66,7 @@ export const SnippetCard = ({
 
   const handleCancel = () => {
     setEditedTitle(snippet.title);
-    setEditedCode(snippet.code);
+    setEditedCode(snippet.code_snippet);
     onCancelEdit();
   };
 
@@ -75,7 +83,9 @@ export const SnippetCard = ({
       <div className="flex items-center justify-between">
         <Badge variant="transparent" size="sm" className="uppercase">
           <span className={'text-slate-300 '}>#{'  '}</span>
-          <span className={'text-slate-400 '}>{snippet.language}</span>
+          <span className={'text-slate-400 '}>
+            {languageName.toUpperCase()}
+          </span>
         </Badge>
 
         {isHovered && (
@@ -101,7 +111,7 @@ export const SnippetCard = ({
         <div>
           <div className="font-semibold text-sm my-4">{snippet.title}</div>
           <div className="mb-4 h-32 bg-slate-50 p-4 rounded-md text-[10px] font-mono text-slate-500 border border-slate-100">
-            {snippet.code}
+            {snippet.code_snippet}
           </div>
         </div>
       )}
@@ -165,14 +175,9 @@ export const SnippetCard = ({
       <Group justify="space-between" className="text-xs text-slate-400 mt-4">
         <Group gap="xs">
           <Avatar radius={'sm'} size={20}>
-            {snippet.author
-              .split(' ')
-              .map((word) => word[0])
-              .join('')
-              .toUpperCase()
-              .slice(0, 2)}
+            A
           </Avatar>
-          <div className="text-slate-500 text-xs">{snippet.date}</div>
+          <div className="text-slate-500 text-xs">{formattedDate}</div>
         </Group>
 
         <div

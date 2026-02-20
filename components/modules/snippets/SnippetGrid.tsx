@@ -1,94 +1,125 @@
 'use client';
 import { NewSnippetButton } from '@/components/modules/snippets/NewSnippetButton';
 import { SnippetCard } from '@/components/modules/snippets/SnippetCard';
-import { Snippet } from '@/utils/interfaces/snippet';
 import { useState } from 'react';
-
-const mockSnippets = [
-  {
-    id: 1,
-    language: 'JAVASCRIPT',
-    title: 'Array.reduce() Pattern',
-    code: `const sum = arr.reduce((acc, curr) => acc + curr, 0);`,
-    author: 'Ali',
-    date: 'Oct 24',
-  },
-  {
-    id: 2,
-    language: 'CSS',
-    title: 'Tailwind Flex Center',
-    code: `<div className="flex items-center justify-center">`,
-    author: 'JL',
-    date: 'Oct 25',
-  },
-  {
-    id: 3,
-    language: 'PYTHON',
-    title: 'Python List Comp',
-    code: `new_list = [x for x in old_list if x > 10]`,
-    author: 'SC',
-    date: 'Oct 26',
-  },
-];
+import {
+  useCreateSheetMutation,
+  useDeleteSheetMutation,
+  useGetSheetsQuery,
+  useUpdateSheetMutation,
+} from '@/store/api';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import toast from 'react-hot-toast';
 
 export default function SnippetsGrid() {
-  const [snippets, setSnippets] = useState<Snippet[]>(mockSnippets);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const handleDelete = (id: number) => {
-    setSnippets(snippets.filter((snippet) => snippet.id !== id));
-    if (editingId === id) {
-      setEditingId(null);
+  const query = useSelector((state: RootState) => state.search.query);
+  const {
+    data: sheets,
+    isLoading: sheetloading,
+    isError,
+  } = useGetSheetsQuery(query);
+  const [createSheet, { isLoading: isCreating }] = useCreateSheetMutation();
+  const [updateSheet] = useUpdateSheetMutation();
+  const [deleteSheet] = useDeleteSheetMutation();
+
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteSheet(id).unwrap();
+      if (editingId === id) setEditingId(null);
+      toast.success('Sheet deleted successfully.');
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to delete sheet.');
     }
   };
 
-  const handleSave = (
+  const handleSave = async (
     id: number,
     updatedTitle: string,
     updatedCode: string,
   ) => {
-    setSnippets(
-      snippets.map((snippet) =>
-        snippet.id === id
-          ? { ...snippet, title: updatedTitle, code: updatedCode }
-          : snippet,
-      ),
-    );
-    setEditingId(null);
+    const sheet = sheets?.find((s) => s.id === id);
+    if (!sheet) return;
+    const languageName = sheet.language.name;
+    try {
+      await updateSheet({
+        id,
+        data: {
+          title: updatedTitle,
+          description: sheet.description ?? '',
+          code_snippet: updatedCode,
+          language: languageName,
+        },
+      }).unwrap();
+      setEditingId(null);
+      toast.success('Sheet updated successfully.');
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to update sheet.');
+    }
   };
 
-  const handleAdd = (title: string, code: string, language: string) => {
-    const maxId =
-      snippets.length > 0 ? Math.max(...snippets.map((s) => s.id)) : 0;
-    const newSnippet = {
-      id: maxId + 1,
-      title,
-      code,
-      language,
-      author: 'Dikshya',
-      date: new Date().toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-      }),
-    };
-    setSnippets([newSnippet, ...snippets]);
+  const handleAdd = async (
+    title: string,
+    description: string,
+    code_snippet: string,
+    language: string,
+  ) => {
+    try {
+      await createSheet({
+        title,
+        description: description || 'Description',
+        code_snippet,
+        language,
+      }).unwrap();
+      toast.success('Sheet created successfully.');
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to create sheet.');
+    }
   };
+  if (sheetloading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="w-10 h-10 border-4 border-gray-300 border-t-gray-800 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+  if (isError) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center text-red-400">
+          Something went wrong. Please try again.
+        </div>
+      </div>
+    );
+  }
   return (
     <section className={'w-full my-12'}>
-      <NewSnippetButton onAdd={handleAdd} />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 md:max-w-5xl mx-auto">
-        {snippets.map((snippet) => (
-          <SnippetCard
-            key={snippet.id}
-            snippet={snippet}
-            isEditing={editingId === snippet.id}
-            onEdit={() => setEditingId(snippet.id)}
-            onCancelEdit={() => setEditingId(null)}
-            onDelete={() => handleDelete(snippet.id)}
-            onSave={handleSave}
-          />
-        ))}
-      </div>
+      <NewSnippetButton onAdd={handleAdd} isLoading={isCreating} />
+      {!sheets || sheets.length === 0 ? (
+        <div className={'text-center text-slate-400 mt-16'}>
+          {query
+            ? `No sheets found for "${query}". `
+            : 'No sheets found. Create your first one! '}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 md:max-w-5xl mx-auto">
+          {sheets.map((snippet) => (
+            <SnippetCard
+              key={snippet.id}
+              snippet={snippet}
+              isEditing={editingId === snippet.id}
+              onEdit={() => setEditingId(snippet.id)}
+              onCancelEdit={() => setEditingId(null)}
+              onDelete={() => handleDelete(snippet.id)}
+              onSave={handleSave}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

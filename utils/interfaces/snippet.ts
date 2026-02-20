@@ -1,8 +1,11 @@
+import { Language } from '@/utils/interfaces/language';
+
 export interface Snippet {
   id: number;
-  language: string;
+  language: Language;
   title: string;
-  code: string;
-  author: string;
-  date: string;
+  description?: string;
+  code_snippet: string;
+  created_at: string;
+  updated_at: string;
 }
