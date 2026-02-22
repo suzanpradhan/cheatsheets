@@ -13,8 +13,14 @@ import google from '@/assets/svg/google.svg';
 import Image from 'next/image';
 import { useForm } from '@mantine/form';
 import Link from 'next/link';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+import { useState } from 'react';
 
 export default function Login() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm({
     initialValues: {
       email: '',
@@ -30,8 +36,22 @@ export default function Login() {
     console.log('Google sign in clicked');
   };
 
-  const handleSubmit = () => {
-    console.log('Sign in with:', form.values);
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    const result = await signIn('credentials', {
+      email: form.values.email,
+      password: form.values.password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      toast.error('Invalid email or password');
+      setIsLoading(false);
+    } else {
+      toast.success('Login successful');
+      setIsLoading(false);
+      router.push('/snippets');
+    }
   };
 
   return (
@@ -138,8 +158,9 @@ export default function Login() {
               radius="md"
               fullWidth
               variant="filled"
+              disabled={isLoading}
             >
-              Sign in
+              {isLoading ? 'Signning in' : 'Sign in'}
             </Button>
           </Stack>
         </form>

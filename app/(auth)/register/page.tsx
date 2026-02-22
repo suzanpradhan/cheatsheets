@@ -13,6 +13,9 @@ import google from '@/assets/svg/google.svg';
 import Image from 'next/image';
 import { useForm } from '@mantine/form';
 import Link from 'next/link';
+import { useRegisterMutation } from '@/store/authApi';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 export default function Register() {
   const form = useForm({
@@ -26,13 +29,34 @@ export default function Register() {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
     },
   });
+  const [register, { isLoading }] = useRegisterMutation();
+  const router = useRouter();
 
   const handleGoogleSignIn = () => {
     console.log('Google sign in clicked');
   };
 
-  const handleSubmit = () => {
-    console.log('Sign in with:', form.values);
+  const handleSubmit = async () => {
+    try {
+      const data = {
+        email: form.values.email,
+        password: form.values.password,
+        profile: {
+          full_name: form.values.fullName,
+        },
+      };
+      await register(data).unwrap();
+      toast.success('Registration successful');
+      form.reset();
+      router.push('/login');
+    } catch (error: unknown) {
+      console.error('Registration failed:', error);
+      if (isApiError(error)) {
+        toast.error(error.data?.email?.[0] ?? 'Registration failed');
+      } else {
+        toast.error('Registration failed');
+      }
+    }
   };
 
   return (
@@ -156,8 +180,9 @@ export default function Register() {
               radius="md"
               fullWidth
               variant="filled"
+              disabled={isLoading}
             >
-              Create account
+              {isLoading ? 'Creating account...' : 'Create account'}
             </Button>
           </Stack>
         </form>
