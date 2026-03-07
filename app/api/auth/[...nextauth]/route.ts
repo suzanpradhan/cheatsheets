@@ -87,7 +87,7 @@ async function refreshAccessToken(token: JWT) {
     return {
       ...token,
       accessToken: data.access,
-      accessTokenExpiry: Date.now() + 15 * 60 * 1000,
+      accessTokenExpiry: Date.now() + 15 * 60 * 1000, //15 min
       error: undefined,
     };
   } catch {

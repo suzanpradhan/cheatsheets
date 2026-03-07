@@ -160,7 +160,7 @@ export default function Login() {
               variant="filled"
               disabled={isLoading}
             >
-              {isLoading ? 'Signning in' : 'Sign in'}
+              {isLoading ? 'Signing in' : 'Sign in'}
             </Button>
           </Stack>
         </form>
