@@ -1,5 +1,6 @@
 import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { api } from './api';
+import { authApi } from './authApi';
 
 const searchSlice = createSlice({
   name: 'search',
@@ -16,10 +17,11 @@ export const { setSearchQuery } = searchSlice.actions;
 export const store = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,
+    [authApi.reducerPath]: authApi.reducer,
     search: searchSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(api.middleware),
+    getDefaultMiddleware().concat(api.middleware, authApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

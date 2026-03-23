@@ -1,11 +1,18 @@
 import Image from 'next/image';
 import background from '@/assets/images/login-bg.avif';
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
+import { authOptions } from '../api/auth/[...nextauth]/route';
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession(authOptions);
+  if (session) {
+    redirect('/snippets');
+  }
   return (
     <div className="flex min-h-screen">
       <div className="hidden lg:flex lg:w-1/2 relative bg-gray-900 px-12 py-28">
