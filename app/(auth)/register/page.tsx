@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { useRegisterMutation } from '@/store/authApi';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { isApiError } from '@/utils/apiError';
 
 export default function Register() {
   const form = useForm({

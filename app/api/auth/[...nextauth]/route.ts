@@ -25,7 +25,6 @@ export const authOptions: NextAuthOptions = {
           if (!res.ok) return null;
 
           const data = await res.json();
-          console.log('Full API response:', JSON.stringify(data));
           const payload = JSON.parse(
             Buffer.from(data.access.split('.')[1], 'base64').toString(),
           );

@@ -1,5 +1,5 @@
 'use client';
-import { TextInput } from '@mantine/core';
+import { Button, TextInput } from '@mantine/core';
 import { IconLogout, IconSearch, IconTerminal } from '@tabler/icons-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchQuery } from '@/store/store';
@@ -38,13 +38,10 @@ export const TopNav = () => {
           value={query}
           onChange={(e) => dispatch(setSearchQuery(e.target.value))}
         />
-        <div
-          className="flex items-center gap-2 cursor-pointer"
-          onClick={handleSignOut}
-        >
-          <IconLogout />
+        <Button onClick={handleSignOut} variant="white">
+          <IconLogout className="mr-2" />
           <p>Logout</p>
-        </div>
+        </Button>
       </div>
     </nav>
   );
